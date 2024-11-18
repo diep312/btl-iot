@@ -19,15 +19,9 @@ const routes = [
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <MainDashboard />,
   },
+
   {
-    name: 'Bảng dữ liệu',
-    layout: '/admin',
-    icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
-    path: '/data-tables',
-    component: <DataTables />,
-  },
-  {
-    name: 'Đăng nhập',
+    name: 'Đăng nhập bằng tài khoản khác',
     layout: '/auth',
     path: '/sign-in',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,

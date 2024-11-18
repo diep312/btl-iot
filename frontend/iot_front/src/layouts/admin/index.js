@@ -12,16 +12,14 @@ import routes from 'routes.js';
 // Custom Chakra theme
 export default function Dashboard(props) {
   const { ...rest } = props;
-  // states and functions
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
-  // functions for changing the states from components
   const getRoute = () => {
     return window.location.pathname !== '/admin/full-screen-maps';
   };
 
   const getActiveRoute = (routes) => {
-    let activeRoute = 'Default Brand Text';
+    let activeRoute = 'SmartAgri';
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
         let collapseActiveRoute = getActiveRoute(routes[i].items);

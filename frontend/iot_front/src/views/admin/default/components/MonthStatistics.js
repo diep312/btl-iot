@@ -2,27 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Flex, Icon, useColorModeValue, Text } from "@chakra-ui/react";
 import Card from "components/card/Card.js";
 import LineChart from "components/charts/LineChart";
-import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
+import { MdBarChart } from "react-icons/md";
 import { UserState } from "contexts/UserContext";
-import { getDataWeek } from "api/api";
-import { last7Days, formatDate } from "util/date";
-import { RiFontFamily } from "react-icons/ri";
+import { getDataMonth } from "api/api";
+import { getDatesInMonth, formatDate } from "util/date"; // New function to get dates in month
 
-
-const TotalSpent = (props) => {
+const MonthStatistics = (props) => {
   const { ...rest } = props;
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
   const iconColor = useColorModeValue("brand.500", "white");
   const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
-  const bgHover = useColorModeValue(
-    { bg: "secondaryGray.400" },
-    { bg: "whiteAlpha.50" }
-  );
-  const bgFocus = useColorModeValue(
-    { bg: "secondaryGray.300" },
-    { bg: "whiteAlpha.100" }
-  );
+  const bgHover = useColorModeValue({ bg: "secondaryGray.400" }, { bg: "whiteAlpha.50" });
+  const bgFocus = useColorModeValue({ bg: "secondaryGray.300" }, { bg: "whiteAlpha.100" });
 
   const [chartData, setChartData] = useState([
     {
@@ -37,7 +29,8 @@ const TotalSpent = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = UserState();
-  const days = last7Days();
+  const currentDay = new Date();
+  const dates = getDatesInMonth(currentDay.getMonth(), currentDay.getFullYear());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,21 +39,25 @@ const TotalSpent = (props) => {
       setError(null);
 
       try {
+        const month = currentDay.getMonth() + 1;
+        const year = currentDay.getFullYear();
+
         const [airResponse, lightResponse] = await Promise.all([
-          getDataWeek("air", days.join(','), user.deviceId),
-          getDataWeek("light", days.join(','), user.deviceId)
+          getDataMonth("air", month, year, user.deviceId),
+          getDataMonth("light", month, year, user.deviceId)
         ]);
-        
+
         if (airResponse?.averagedData && lightResponse?.averagedData) {
-          const processedAirData = days.map(day => {
-            const dayData = airResponse.averagedData.find(d => d.date === day);
+          const processedAirData = dates.map(date => {
+            const dayData = airResponse.averagedData.find(d => d.date === date);
             return dayData ? dayData.average : 0;
           });
 
-          const processedLightData = days.map(day => {
-            const dayData = lightResponse.averagedData.find(d => d.date === day);
+          const processedLightData = dates.map(date => {
+            const dayData = lightResponse.averagedData.find(d => d.date === date);
             return dayData ? dayData.average : 0;
           });
+
 
           setChartData([
             {
@@ -102,7 +99,7 @@ const TotalSpent = (props) => {
       theme: "dark",
       x: {
         formatter: function(value) {
-          return formatDate(days[value - 1]);
+          return formatDate(dates[value - 1]); 
         }
       }
     },
@@ -112,7 +109,7 @@ const TotalSpent = (props) => {
       width: 2,
     },
     xaxis: {
-      categories: days.map(formatDate),
+      categories: dates.map(formatDate),
       labels: {
         style: {
           colors: "#A3AED0",
@@ -205,7 +202,7 @@ const TotalSpent = (props) => {
             fontSize='xl'
             fontWeight='700'
             lineHeight='100%'>
-            Thống kê tuần
+            Thống kê tháng
           </Text>
           <Button
             ms="auto"
@@ -238,4 +235,4 @@ const TotalSpent = (props) => {
   );
 };
 
-export default TotalSpent;
+export default MonthStatistics;

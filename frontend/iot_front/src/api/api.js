@@ -21,24 +21,53 @@ export const getDataDay = async (types, date, deviceId) => {
     });
 };
 
-export const getDataWeek = async (types, date, deviceId) => {
-    if (!types || !deviceId) {
-        throw new Error("Missing types or deviceId parameter");
+export const getDataWeek = async (types, dates, deviceId) => {
+    if (!types || !deviceId || !dates) {
+        throw new Error("Missing required parameters");
     }
     
-    return await axios.get(`${API_URL}/api/get-data-week`, {
-        params: { types, date, deviceId },
-    });
+    const dateParam = Array.isArray(dates) ? dates.join(',') : dates;
+    
+    try {
+        const response = await axios.get(`${API_URL}/api/get-data-week`, {
+            params: { 
+                types, 
+                date: dateParam, 
+                deviceId 
+            }
+        });
+
+        if (response.data.errCode === 0) {
+            return response.data.data;
+        } else {
+            throw new Error(response.data.errMessage);
+        }
+    } catch (error) {
+        console.error('Error in getDataWeek:', error);
+        throw error;
+    }
 };
 
 export const getDataMonth = async (types, month, year, deviceId) => {
     if (!types || !deviceId) {
         throw new Error("Missing types or deviceId parameter");
     }
+
+    try {
+        const response = await axios.get(`${API_URL}/api/get-data-month`, {
+            params: { types, month, year, deviceId },
+        });
+
+        if (response.data.errCode === 0) {
+            return response.data.data;
+        } else {
+            throw new Error(response.data.errMessage);
+        }
+    } catch (error) {
+        console.error('Error in getDataMonth:', error);
+        throw error;
+    }
     
-    return await axios.get(`${API_URL}/api/get-data-month`, {
-        params: { types, month, year, deviceId },
-    });
 };
 
 export const login = async (credentials) => {
