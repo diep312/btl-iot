@@ -33,8 +33,8 @@ export default function UserReports() {
   const [lightValue, setLightnessValue] = React.useState(null);
 
   React.useEffect(() => {
-    if (user && user.deviceId) {
-      const interval = setInterval(async () => {
+    const fetchData = async () => {
+      if (user && user.deviceId) {
         try {
           const latestAirData = await getLatestData("air", user.deviceId);
           const latestLightData = await getLatestData("light", user.deviceId);
@@ -51,10 +51,11 @@ export default function UserReports() {
         } catch (error) {
           console.error("Failed to fetch data:", error);
         }
-      }, 5000);
   
-      return () => clearInterval(interval);
+      }
     }
+    
+    fetchData();
   }, [user]);
 
   return (

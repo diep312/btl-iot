@@ -8,20 +8,36 @@ import {
 } from "@chakra-ui/react";
 // Custom components
 import Card from "components/card/Card.js";
-
-// Assets
+import { controlDevice } from "api/api";
 import { MdDragIndicator } from "react-icons/md";
 import { useState } from 'react';
+import { UserState } from "contexts/UserContext";
 
 export default function Conversion(props) {
   const { ...rest } = props;
 
   const [isAutoMode, setAutoMode] = useState(true);
+  const [isLightOn, setLightOn] = useState(false);
+  const [isRoofOn, setRoofOn] = useState(false);
 
-  // Chakra Color Mode
+  const { user } = UserState();
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorDisabled = useColorModeValue("secondaryGray.100", "secondaryGray.900");
   const boxBg = useColorModeValue("secondaryGray.300", "navy.700");
+
+  const handleLightsControl = () =>{
+    if(user && user.deviceId){
+      setLightOn(prevState => !prevState);
+      controlDevice(user.deviceId, 'light', isLightOn);
+    }
+  }
+
+  const handleRoofControl = () => {
+    if(user && user.deviceId){
+      setRoofOn(prevState =>!prevState);
+      controlDevice(user.deviceId, 'roof', isRoofOn);
+    }
+  }
 
   return (
     <Card p='20px' align='center' direction='column' w='100%' {...rest}>
@@ -62,6 +78,8 @@ export default function Conversion(props) {
             me='16px'
             isDisabled={isAutoMode}
             colorScheme='brandScheme'
+            isChecked={isLightOn}
+            onChange={handleLightsControl}
           />
           <Text
             fontWeight='bold'
@@ -87,6 +105,8 @@ export default function Conversion(props) {
             me='16px'
             isDisabled={isAutoMode}
             colorScheme='brandScheme'
+            isChecked={isRoofOn}
+            onChange={handleRoofControl}
           />
           <Text
             fontWeight='bold'

@@ -32,7 +32,7 @@ export default function Conversion(props) {
         if (airResponse?.averagedData) {
           const processedAirData = dates.map(date => {
             const dayData = airResponse.averagedData.find(d => d.date === date);
-            return dayData ? dayData.average : 0;
+            return dayData ? dayData.average : 0; 
           });
 
 
@@ -49,8 +49,18 @@ export default function Conversion(props) {
 
           let toxicDays = processedAirData.length - cleanDays - unCleanDays;
 
+          let tempList = []; 
+
+          if(cleanDays > 0){
+            tempList.push(cleanDays);
+          }
+          
+          if(unCleanDays > 0) tempList.push(unCleanDays);
+
+          if (toxicDays > 0) tempList.push(toxicDays);
+
           setPieChartData(
-            [cleanDays, unCleanDays , toxicDays]
+            tempList
           )
 
         }
@@ -154,7 +164,7 @@ export default function Conversion(props) {
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            {(isLoading) ? "Đang tải..." : pieChartData[0]}
+            {(isLoading) ? "Đang tải..." : pieChartData[0] ? pieChartData[0] : 0}
           </Text>
         </Flex>
         
@@ -172,7 +182,7 @@ export default function Conversion(props) {
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            {(isLoading) ? "Đang tải..." : pieChartData[1]}
+            {(isLoading) ? "Đang tải..." : pieChartData[1] ? pieChartData[1] : 0}
           </Text>
         </Flex>
 
@@ -190,7 +200,7 @@ export default function Conversion(props) {
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-          {(isLoading) ? "Đang tải..." : pieChartData[2]}
+          {(isLoading) ? "Đang tải..." : pieChartData[2] ? pieChartData[2] : 0}
           </Text>
         </Flex>
       </Card>

@@ -27,6 +27,7 @@ let handleControl = async (req, res) => {
     let deviceId = req.query.deviceId
     let type = req.query.type 
     let status = req.query.status 
+    
     if (!deviceId || !type || !status ) {
         return res.status(500).json({
             errCode: 1,

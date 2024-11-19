@@ -86,6 +86,16 @@ export const getLatestData = async (types, deviceId) => {
 };
 
 
-export const controlDevice = async (controlData) => {
-    return await axios.post(`${API_URL}/api/control`, controlData);
+export const controlDevice = async (deviceId, type, status) => {
+    if(!deviceId || !type || !status) {
+        throw new Error("Missing required parameters");
+    }
+     
+    return await axios.post(`${API_URL}/api/control`, {
+        params:{
+            deviceId,
+            type,
+            status
+        }
+    });
 };
